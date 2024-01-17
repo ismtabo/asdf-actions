@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0](https://github.com/asdf-vm/actions/compare/v3.0.2...v3.1.0) (2024-01-17)
+
+
+### Features
+
+* added post script to actions to do cleanup unless `skip_install` is true ([c018481](https://github.com/ismtabo/asdf-actions/commit/c018481dee8ff63947d4e772f0ab5ba1f08b90b4))
+
+
 ## [3.0.2](https://github.com/asdf-vm/actions/compare/v3.0.1...v3.0.2) (2023-10-12)
 
 
