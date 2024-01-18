@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 
-## Unreleased
+## [3.2.1](https://github.com/asdf-vm/actions/compare/v3.2.0...v3.2.1) (2024-01-18)
 
 
 ### Patches
