@@ -23,25 +23,32 @@ async function setupAsdf(): Promise<void> {
 	}
 
 	const branch = core.getInput('asdf_branch', {required: true});
-	if (fs.existsSync(asdfDir)) {
+	if (fs.existsSync(path.join(asdfDir, '.git'))) {
 		core.info(`Updating asdf in ASDF_DIR "${asdfDir}" on branch "${branch}"`);
 		const options = {cwd: asdfDir};
 		await exec.exec('git', ['remote', 'set-branches', 'origin', branch], options);
 		await exec.exec('git', ['fetch', '--depth', '1', 'origin', branch], options);
 		await exec.exec('git', ['checkout', '-B', branch, 'origin'], options);
-	} else {
-		core.info(`Cloning asdf into ASDF_DIR "${asdfDir}" on branch "${branch}"`);
-		await exec.exec('git', [
-			'clone',
-			'--depth',
-			'1',
-			'--branch',
-			branch,
-			'--single-branch',
-			'https://github.com/asdf-vm/asdf.git',
-			asdfDir,
-		]);
+
+		return;
 	}
+
+	if (fs.existsSync(asdfDir)) {
+		core.debug(`Removing dirty ${asdfDir}`);
+		await io.rmRF(asdfDir);
+	}
+
+	core.info(`Cloning asdf into ASDF_DIR "${asdfDir}" on branch "${branch}"`);
+	await exec.exec('git', [
+		'clone',
+		'--depth',
+		'1',
+		'--branch',
+		branch,
+		'--single-branch',
+		'https://github.com/asdf-vm/asdf.git',
+		asdfDir,
+	]);
 }
 
 export {setupAsdf};

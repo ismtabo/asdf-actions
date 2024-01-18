@@ -19,13 +19,13 @@ async function cleanup(): Promise<void> {
 		const asdfDataDir = process.env.ASDF_DATA_DIR;
 		if (asdfDataDir && fs.existsSync(asdfDataDir)) {
 			core.debug(`Removing ${asdfDataDir}`);
-			fs.rmSync(asdfDataDir, {force: true, recursive: true});
+			await io.rmRF(asdfDataDir);
 		}
 
 		const asdfDir = process.env.ASDF_DIR;
 		if (asdfDir && fs.existsSync(asdfDir)) {
 			core.debug(`Removing ${asdfDir}`);
-			fs.rmSync(asdfDir, {force: true, recursive: true});
+			await io.rmRF(asdfDir);
 		}
 	});
 }

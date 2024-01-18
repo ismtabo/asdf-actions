@@ -723,7 +723,7 @@ var require_tunnel = __commonJS({
         connectOptions.headers = connectOptions.headers || {};
         connectOptions.headers["Proxy-Authorization"] = "Basic " + new Buffer(connectOptions.proxyAuth).toString("base64");
       }
-      debug2("making CONNECT request");
+      debug3("making CONNECT request");
       var connectReq = self.request(connectOptions);
       connectReq.useChunkedEncodingByDefault = false;
       connectReq.once("response", onResponse);
@@ -743,7 +743,7 @@ var require_tunnel = __commonJS({
         connectReq.removeAllListeners();
         socket.removeAllListeners();
         if (res.statusCode !== 200) {
-          debug2(
+          debug3(
             "tunneling socket could not be established, statusCode=%d",
             res.statusCode
           );
@@ -755,7 +755,7 @@ var require_tunnel = __commonJS({
           return;
         }
         if (head.length > 0) {
-          debug2("got illegal response body from proxy");
+          debug3("got illegal response body from proxy");
           socket.destroy();
           var error = new Error("got illegal response body from proxy");
           error.code = "ECONNRESET";
@@ -763,13 +763,13 @@ var require_tunnel = __commonJS({
           self.removeSocket(placeholder);
           return;
         }
-        debug2("tunneling connection has established");
+        debug3("tunneling connection has established");
         self.sockets[self.sockets.indexOf(placeholder)] = socket;
         return cb(socket);
       }
       function onError(cause) {
         connectReq.removeAllListeners();
-        debug2(
+        debug3(
           "tunneling socket could not be established, cause=%s\n",
           cause.message,
           cause.stack
@@ -831,9 +831,9 @@ var require_tunnel = __commonJS({
       }
       return target;
     }
-    var debug2;
+    var debug3;
     if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
-      debug2 = function() {
+      debug3 = function() {
         var args = Array.prototype.slice.call(arguments);
         if (typeof args[0] === "string") {
           args[0] = "TUNNEL: " + args[0];
@@ -843,10 +843,10 @@ var require_tunnel = __commonJS({
         console.error.apply(console, args);
       };
     } else {
-      debug2 = function() {
+      debug3 = function() {
       };
     }
-    exports.debug = debug2;
+    exports.debug = debug3;
   }
 });
 
@@ -2145,10 +2145,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       return process.env["RUNNER_DEBUG"] === "1";
     }
     exports.isDebug = isDebug;
-    function debug2(message) {
+    function debug3(message) {
       command_1.issueCommand("debug", {}, message);
     }
-    exports.debug = debug2;
+    exports.debug = debug3;
     function error(message, properties = {}) {
       command_1.issueCommand("error", utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
     }
@@ -2504,7 +2504,7 @@ var require_io = __commonJS({
           }
           if (destExists) {
             if (options.force == null || options.force) {
-              yield rmRF(dest);
+              yield rmRF2(dest);
             } else {
               throw new Error("Destination already exists");
             }
@@ -2515,7 +2515,7 @@ var require_io = __commonJS({
       });
     }
     exports.mv = mv;
-    function rmRF(inputPath) {
+    function rmRF2(inputPath) {
       return __awaiter(this, void 0, void 0, function* () {
         if (ioUtil.IS_WINDOWS) {
           if (/[*"<>|]/.test(inputPath)) {
@@ -2534,7 +2534,7 @@ var require_io = __commonJS({
         }
       });
     }
-    exports.rmRF = rmRF;
+    exports.rmRF = rmRF2;
     function mkdirP(fsPath) {
       return __awaiter(this, void 0, void 0, function* () {
         assert_1.ok(fsPath, "a path argument must be provided");
@@ -3292,25 +3292,29 @@ async function setupAsdf() {
     return;
   }
   const branch = core.getInput("asdf_branch", { required: true });
-  if (fs.existsSync(asdfDir)) {
+  if (fs.existsSync(path.join(asdfDir, ".git"))) {
     core.info(`Updating asdf in ASDF_DIR "${asdfDir}" on branch "${branch}"`);
     const options = { cwd: asdfDir };
     await exec.exec("git", ["remote", "set-branches", "origin", branch], options);
     await exec.exec("git", ["fetch", "--depth", "1", "origin", branch], options);
     await exec.exec("git", ["checkout", "-B", branch, "origin"], options);
-  } else {
-    core.info(`Cloning asdf into ASDF_DIR "${asdfDir}" on branch "${branch}"`);
-    await exec.exec("git", [
-      "clone",
-      "--depth",
-      "1",
-      "--branch",
-      branch,
-      "--single-branch",
-      "https://github.com/asdf-vm/asdf.git",
-      asdfDir
-    ]);
+    return;
   }
+  if (fs.existsSync(asdfDir)) {
+    core.debug(`Removing dirty ${asdfDir}`);
+    await io.rmRF(asdfDir);
+  }
+  core.info(`Cloning asdf into ASDF_DIR "${asdfDir}" on branch "${branch}"`);
+  await exec.exec("git", [
+    "clone",
+    "--depth",
+    "1",
+    "--branch",
+    branch,
+    "--single-branch",
+    "https://github.com/asdf-vm/asdf.git",
+    asdfDir
+  ]);
 }
 
 // src/plugins-add/index.ts

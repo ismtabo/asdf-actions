@@ -2504,7 +2504,7 @@ var require_io = __commonJS({
           }
           if (destExists) {
             if (options.force == null || options.force) {
-              yield rmRF(dest);
+              yield rmRF2(dest);
             } else {
               throw new Error("Destination already exists");
             }
@@ -2515,7 +2515,7 @@ var require_io = __commonJS({
       });
     }
     exports.mv = mv;
-    function rmRF(inputPath) {
+    function rmRF2(inputPath) {
       return __awaiter(this, void 0, void 0, function* () {
         if (ioUtil.IS_WINDOWS) {
           if (/[*"<>|]/.test(inputPath)) {
@@ -2534,7 +2534,7 @@ var require_io = __commonJS({
         }
       });
     }
-    exports.rmRF = rmRF;
+    exports.rmRF = rmRF2;
     function mkdirP(fsPath) {
       return __awaiter(this, void 0, void 0, function* () {
         assert_1.ok(fsPath, "a path argument must be provided");
@@ -2678,12 +2678,12 @@ async function cleanup() {
     const asdfDataDir = process2.env.ASDF_DATA_DIR;
     if (asdfDataDir && fs.existsSync(asdfDataDir)) {
       core.debug(`Removing ${asdfDataDir}`);
-      fs.rmSync(asdfDataDir, { force: true, recursive: true });
+      await io.rmRF(asdfDataDir);
     }
     const asdfDir = process2.env.ASDF_DIR;
     if (asdfDir && fs.existsSync(asdfDir)) {
       core.debug(`Removing ${asdfDir}`);
-      fs.rmSync(asdfDir, { force: true, recursive: true });
+      await io.rmRF(asdfDir);
     }
   });
 }

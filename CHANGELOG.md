@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 
+## Unreleased
+
+
+### Patches
+
+* fixed setup action removing asdf dir if is not a git repository
+* fixed cleanup script using @actions/io instead of fs
+
+
 ## [3.2.0](https://github.com/asdf-vm/actions/compare/v3.1.0...v3.2.0) (2024-01-18)
 
 
