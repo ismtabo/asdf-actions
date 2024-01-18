@@ -3,12 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
-## Unreleased
+## [3.2.0](https://github.com/asdf-vm/actions/compare/v3.1.0...v3.2.0) (2024-01-18)
 
 
 ### Features
 
-* added `order` input to install action to set how tools are installed
+* added `order` input to install action to set how tools are installed ([c824591](https://github.com/ismtabo/asdf-actions/commit/c824591bdc1b7e430d113ed6c211a749157827ae))
 
 
 ## [3.1.0](https://github.com/asdf-vm/actions/compare/v3.0.2...v3.1.0) (2024-01-17)
