@@ -22,4 +22,11 @@ inputs:
   skip_install:
     description: setup env without installing asdf
     required: false
-    default: false
+    default: 'false'
+  order:
+    description: |
+      Order in which tools will be installed
+      - 'default': delegate to asdf
+      - 'appearance': install tools in the order they appear in .tool-versions
+    required: false
+    default: default

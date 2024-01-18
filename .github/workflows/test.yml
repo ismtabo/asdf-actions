@@ -126,3 +126,20 @@ jobs:
           before_install: echo asdf nodejs import-keyring
           tool_versions: direnv 2.32.1
       - run: direnv version
+
+  tools_are_installed_with_custom_order:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        # os: ["macos-latest", "ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup asdf
+        uses: ./install
+        with:
+          order: appearance
+          tool_versions: |
+            python 3.12.1
+            azure-cli 2.53.0
